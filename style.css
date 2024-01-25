@@ -22,12 +22,14 @@ input[type="password"] {
     display: block;
     width: 100%;
     margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     padding: 10px;
     box-sizing: border-box;
 }
 
 input[type="submit"] {
-    background-color: #282bd3;
+    background-color: #FFA500;
     font-size: 12px;
     color: #fff;
     border: none;
@@ -37,5 +39,15 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: #0004ff;
+    background-color: #FF8C00;
+}
+
+a {
+    color: #FFA500;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+a:hover {
+    color: #FF8C00;
 }

@@ -11,18 +11,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $sql = "SELECT * FROM users WHERE email = ?";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ss", $email);
+$stmt->bind_param("s", $email);
 $stmt->execute();
 
 $result = $stmt->get_result();
 
 if ($result->num_rows === 1) {
-    $row - $result->fetch_assoc();
+    $row = $result->fetch_assoc();
 
     if (password_verify($password, $row['password'])) {
         $_SESSION["loggedin"] = true;
 
-        header("Location: site.php");
+        header("Location: ./pages/home.php"); 
         exit;
     }
 } else {
@@ -49,7 +49,10 @@ if ($result->num_rows === 1) {
         Senha: <input type="password" name="password" required><br>
 
         <input type="submit" value="Logar">
+        
     </form>
+    <br>
+    <a href="pages/registers/register.php">Ainda não tem um cadastro? Clique aqui!</a>
 </body>
 
 </html>

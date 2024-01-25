@@ -5,7 +5,7 @@
     $username = "root";
     $dbname = "crudPhp";
 
-    $conn = new mysqli($servername, $username, '',$dbname);
+    $conn = new mysqli($servername, $username, '', $dbname);
 
     //Verificar conexão
     if ($conn->connect_error) {
