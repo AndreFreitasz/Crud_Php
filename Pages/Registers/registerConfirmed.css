@@ -4,6 +4,10 @@ body {
     background-color: #fafafa;
 }
 
+h1 {
+    margin-top: 20px;
+}
+
 .box {
     max-width: 300px;
     margin: 0 auto;
@@ -11,4 +15,14 @@ body {
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 5px;
+}
+
+button {
+    background-color: #FFA500;
+    font-size: 12px;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 12px 20px;
 }

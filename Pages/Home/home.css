@@ -1,0 +1,38 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: linear-gradient(to right, #ff8c00, #ff7b00);
+
+    color: white;
+    padding: 40px;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+input {
+    font-size: 12px;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 12px 20px;
+}
+
+input[name="logout"] {
+    background-color: #ff0000;
+}
+
+input[name="client"] {
+    background-color: #0059ffd7;
+}
+
+input[name="back"] {
+    background-color: #e7dc37;
+}

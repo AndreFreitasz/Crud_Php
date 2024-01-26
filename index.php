@@ -1,33 +1,34 @@
 <?php
-session_start();
+    session_start();
 
-require_once "./config.php";
+    require_once "./config.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-}
-
-$sql = "SELECT * FROM users WHERE email = ?";
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-
-$result = $stmt->get_result();
-
-if ($result->num_rows === 1) {
-    $row = $result->fetch_assoc();
-
-    if (password_verify($password, $row['password'])) {
-        $_SESSION["loggedin"] = true;
-
-        header("Location: ./pages/home.php"); 
-        exit;
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
     }
-} else {
-    $error = "Usuário ou senha incorretos";
-}
+
+    $sql = "SELECT * FROM users WHERE email = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $row = $result->fetch_assoc();
+
+        if (password_verify($password, $row['password'])) {
+            $_SESSION["loggedin"] = true;
+
+            header("Location: ./Pages/Home/home.php");
+            exit;
+        }
+    } /*else {
+        $error = "Usuário ou senha incorretos";
+    }*/
+
 ?>
 
 <!DOCTYPE html>
@@ -48,11 +49,16 @@ if ($result->num_rows === 1) {
 
         Senha: <input type="password" name="password" required><br>
 
+        <?php
+        if (isset($error)) {
+            echo '<p>' . $error . '</p>';
+        }
+        ?>
+
         <input type="submit" value="Logar">
-        
     </form>
     <br>
-    <a href="pages/registers/register.php">Ainda não tem um cadastro? Clique aqui!</a>
+    <a href="Pages/Registers/register.php">Ainda não tem um cadastro? Clique aqui!</a>
 </body>
 
 </html>

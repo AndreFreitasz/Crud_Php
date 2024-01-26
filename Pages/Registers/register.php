@@ -18,7 +18,7 @@
         <input type="submit" />
     </form>
     <br>
-    <a href="../../index.php">Já é cadastrado? Faça o seu login!</a>
+    <a href="../../index.php">Já é cadastrado?  Faça o seu login!</a>
 </body>
 
 </html>
