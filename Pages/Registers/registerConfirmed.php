@@ -36,6 +36,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $conn->close();
+
+if (!empty($error)) {
+    header("Location: register.php?error=" . urlencode($error));
+    exit();
+}
 ?>
 
 <!DOCTYPE html>

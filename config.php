@@ -1,14 +1,15 @@
-<?php 
-    session_start();
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+  session_start();
+}
 
-    $servername = "localhost";
-    $username = "root";
-    $dbname = "crudPhp";
+$servername = "localhost";
+$username = "root";
+$dbname = "crudPhp";
 
-    $conn = new mysqli($servername, $username, '', $dbname);
+$conn = new mysqli($servername, $username, '', $dbname);
 
-    //Verificar conexão
-    if ($conn->connect_error) {
-      die("Falha na Conexão: " . $conn->connect_error);  
-    }
-?>
+//Verificar conexão
+if ($conn->connect_error) {
+  die("Falha na Conexão: " . $conn->connect_error);
+}
