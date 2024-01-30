@@ -8,7 +8,7 @@
         $password = $_POST['password'];
     }
 
-    $sql = "SELECT * FROM users WHERE email = ?";
+    $sql = "SELECT id_user, password FROM users WHERE email = ?";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
@@ -22,12 +22,12 @@
         if (password_verify($password, $row['password'])) {
             $_SESSION["loggedin"] = true;
 
+            $_SESSION["user_id"] = $row['id_user'];
+
             header("Location: ./Pages/Home/home.php");
             exit;
         }
-    } /*else {
-        $error = "Usuário ou senha incorretos";
-    }*/
+    }
 
 ?>
 

@@ -14,6 +14,25 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("Location: ../../index.php");
     exit;
 }
+
+$user_id = $_SESSION['user_id'];
+
+$sql = "SELECT id_client, name_client, cpf, rg, email_client, telephone1, date_birth FROM clients WHERE id_user =? ORDER BY id_client ASC";
+
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("i", $user_id);
+
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+    } else {
+        // Tratar erro na execução da consulta
+    }
+
+    $stmt->close();
+} else {
+    // Tratar erro na preparação da consulta
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -25,6 +44,12 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     <title>Home</title>
     <link rel="stylesheet" href="./home.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <style>
+        .table-bg {
+          border-radius: 15px 15px 0 0;  
+        }
+    </style>
+        
 </head>
 
 <body>
@@ -46,23 +71,38 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
         </div>
     </header>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Nome</th>
-                <th scope="col">CPF</th>
-                <th scope="col">RG</th>
-                <th scope="col">E-mail</th>
-                <th scope="col">Telefone 1</th>
-                <th scope="col">Telefone 2</th>
-                <th scope="col">Data de Nascimento</th>
-            </tr>
-        </thead>
-        <tbody>
-
-        </tbody>
-    </table>
+    <div class="m-5">
+        <table class="table table-striped table-bg text-center">
+            <thead class="table text-center">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">CPF</th>
+                    <th scope="col">RG</th>
+                    <th scope="col">E-mail</th>
+                    <th scope="col">Telefone 1</th>
+                    <th scope="col">Data de Nascimento</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                    while($user_data = mysqli_fetch_assoc($result))
+                    {
+                        echo "<tr>";
+                        echo "<td>".$user_data['id_client'] ."</td>";
+                        echo "<td>".$user_data['name_client'] ."</td>";
+                        echo "<td>".$user_data['cpf'] ."</td>";
+                        echo "<td>".$user_data['rg'] ."</td>";
+                        echo "<td>".$user_data['email_client'] ."</td>";
+                        echo "<td>".$user_data['telephone1'] ."</td>";
+                        echo "<td>".$user_data['date_birth'] ."</td>";
+                        echo "<td>". '...' ."</td>";
+                    }
+                ?>
+            </tbody>
+        </table>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>

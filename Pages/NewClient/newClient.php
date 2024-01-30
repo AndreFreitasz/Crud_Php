@@ -1,3 +1,37 @@
+<?php
+session_start();
+
+$msgError = '';
+
+if (isset($_SESSION['user_id']) && isset($_POST['submitClient'])) {
+    include_once '../../config.php';
+
+    $userId = $_SESSION['user_id'];
+
+    $nameClient = $_POST['nameClient'];
+    $emailClient = $_POST['emailClient'];
+    $cpfClient = $_POST['cpfClient'];
+    $rgClient = $_POST['rgClient'];
+    $telephoneClient = $_POST['telephoneClient'];
+    $optionalTelephone = $_POST['optionalTelephone'];
+    $dateOfBirth = $_POST['dateOfBirth'];
+
+    //Corrigir o formato da data
+    $dateOfBirth = date('Y-m-d', strtotime($_POST['dateOfBirth']));
+
+    // Consulta para verificar se já existe um cliente com mesmo CPF ou RG
+    $checkQuery = "SELECT * FROM clients WHERE cpf = '$cpfClient' OR rg = '$rgClient'";
+    $checkResult = mysqli_query($conn, $checkQuery);
+
+    if (mysqli_num_rows($checkResult) > 0) {
+        $msgError = 'CPF ou RG já cadastrado.';
+    } else {
+        $result = mysqli_query($conn, "INSERT INTO clients( id_user, name_client, cpf, rg, email_client, telephone1, telephone2, date_birth) 
+        VALUES ( '$userId', '$nameClient', '$cpfClient', '$rgClient', '$emailClient', '$telephoneClient', '$optionalTelephone', '$dateOfBirth')");
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -79,7 +113,7 @@
                 <div class="row border g-0 rounded shadow-sm">
                     <div class="col p-4">
                         <h3>Cliente</h3>
-                        <form action="newClient.php" method="POST">
+                        <form action="newClient.php" method="POST" onsubmit="return validateForm()">
                             <div class="row">
                                 <div class="col-md-6 mt-4 mb-3">
                                     <label for="nameClient" class="form-label">Nome: *</label>
@@ -117,6 +151,12 @@
                                 </div>
                             </div>
 
+                            <?php if (!empty($msgError)) : ?>
+                                <div class="error-message">
+                                    <p class="text-danger"><?php echo $msgError; ?></p>
+                                </div>
+                            <?php endif; ?>
+
                             <input type="submit" name="submitClient" value="Salvar Alterações" />
 
                         </form>
@@ -132,10 +172,10 @@
                                 <h3>Endereços</h3>
                             </div>
                             <div class="col-md-3 mt-4 mb-3">
-                                <button type="button" onclick="adicionarCampo()" class="addAddress"> Adicionar endereço</button>
+                                <button type="button" onclick="adicionarCampo()" class="addAddress btn btn-outline-warning"> Adicionar endereço</button>
                             </div>
                         </div>
-                        <form method="POST" action="clients.php">
+                        <form method="POST" action="loadingAddress.php">
                             <div id="enderecos">
                                 <div class="form-group">
                                     <div class="row">
@@ -186,7 +226,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/inputmask@5/dist/jquery.inputmask.min.js"></script>
-        <script src="js/address.js" <script>
+        <script src="js/address.js"></script>
+        <script>
             $(document).ready(function() {
 
                 // Máscara para CPF
