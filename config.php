@@ -7,7 +7,14 @@ $servername = "localhost";
 $username = "root";
 $dbname = "crudPhp";
 
-$conn = new mysqli($servername, $username, '', $dbname);
+try {
+  $conn = new mysqli($servername, $username, '', $dbname);
+  //echo "Conexão com o banco de dados realizada com sucesso!";
+
+} catch (PDOException $err){
+  echo "Erro: Conexão com o banco de dados não foi realizada com sucesso! Erro gerado: " . $err->getMessage();
+}
+
 
 //Verificar conexão
 if ($conn->connect_error) {

@@ -17,7 +17,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 $user_id = $_SESSION['user_id'];
 
-$sql = "SELECT id_client, name_client, cpf, rg, email_client, telephone1, date_birth FROM clients WHERE id_user =? ORDER BY id_client ASC";
+$sql = "SELECT id_client, name_client, cpf, rg, status, email_client, telephone1, date_birth FROM clients WHERE id_user =? ORDER BY id_client ASC";
 
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("i", $user_id);
@@ -97,18 +97,29 @@ if ($stmt = $conn->prepare($sql)) {
                     echo "<td>" . $user_data['email_client'] . "</td>";
                     echo "<td>" . $user_data['telephone1'] . "</td>";
                     echo "<td>" . $user_data['date_birth'] . "</td>";
-                    echo "<td>
-                            <a class='btn btn-sm btn-primary' href='../Edits/editClient.php?id_client=$user_data[id_client]'>
-                                <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-pencil' viewBox='0 0 16 16'>
-                                    <path d='M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325'/>
-                                </svg>
-                            </a>
-                            <a class='btn btn-sm btn-danger' href='../Disables/disableClient.php?id_client=$user_data[id_client]'>
-                                <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-ban' viewBox='0 0 16 16'>
-                                    <path d='M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0'/>
-                                </svg>
-                            </a>
-                        </td>";
+                    echo "<td>";
+
+                    //Verificação para saber se o cliente está ativo ou desativo.
+                    if ($user_data['status']) {
+                        echo "<a class='btn btn-sm btn-warning' href='../Address/newAddress.php?id_client=$user_data[id_client]'>
+                                    Endereços
+                                </a>
+                                <a class='btn btn-sm btn-primary' href='../updateClient/editClient.php?id_client=$user_data[id_client]'>
+                                    <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-pencil' viewBox='0 0 16 16'>
+                                        <path d='M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325'/>
+                                    </svg>
+                                </a>
+                                <a class='btn btn-sm btn-danger' href='../updateClient/disableClient.php?id_client=$user_data[id_client]'>
+                                    <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-ban' viewBox='0 0 16 16'>
+                                        <path d='M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0'/>
+                                    </svg>
+                                </a>";
+                    } else {
+                        echo "<a class='btn btn-sm btn-success' href='../updateClient/enableClient.php?id_client=$user_data[id_client]'>
+                                    Ativar
+                                </a>";
+                    }
+                    "</td>";
                     echo "</tr>";
                 }
                 ?>
