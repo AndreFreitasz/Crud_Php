@@ -1,8 +1,34 @@
 <?php
-    //Recuperando o ID do cliente da URL
-    if (isset($_GET['id_client'])) {
-        $client_id = $_GET['id_client'];
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+include_once '../../config.php';
+
+//Recuperando o ID do cliente da URL
+if (isset($_GET['id_client'])) {
+    $client_id = $_GET['id_client'];
+}
+
+$sqlCheckAddress = "SELECT * FROM address WHERE id_client = $client_id";
+$resultCheckAddress = $conn->query($sqlCheckAddress);
+
+// Inicializando arrays para guardar os valores dos endereços
+$ceps = $ruas = $numeros = $bairros = $estados = $cidades = $ids = array();
+
+if ($resultCheckAddress->num_rows > 0) {
+    while ($row = $resultCheckAddress->fetch_assoc()) {
+        $ceps[] = $row['cep'];
+        $ruas[] = $row['street'];
+        $numeros[] = $row['number'];
+        $bairros[] = $row['neighborhood'];
+        $estados[] = $row['state'];
+        $cidades[] = $row['city'];
+        $ids[] = $row['id_address'];
     }
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -77,43 +103,61 @@
                         </div>
                         <form method="POST" action="./loadingAddress.php">
                             <div id="enderecos">
+                                <input type="hidden" name="id_client[]" value="<?php echo $client_id; ?>">
+
+                                <!--Se for diferente de vazio a variável $ids, disparará o loop atribuindo o valor do id do endereço para cada formulário-->
+                                <?php if (!empty($ids)) { ?>
+                                    <?php foreach ($ids as $id) { ?>
+                                        <input type="hidden" name="id_address[]" value="<?php echo $id; ?>">
+                                    <?php } ?>
+                                <?php } ?>
+
                                 <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-6 mt-4 mb-3">
-                                            <label class="form-label" for="cep">CEP: </label>
-                                            <input type="text" class="form-control" name="cep[]" id="cep" placeholder="CEP" aria-describedby="cep" required />
-                                        </div>
-                                        <div class="col-md-6 mt-4 mb-3">
-                                            <label>Rua: </label>
-                                            <input type="text" class="form-control" aria-describedby="rua" name="rua[]" id="rua" placeholder="Rua" />
-                                        </div>
-                                    </div>
 
-                                    <div class="row">
-                                        <div class="col-md-6 mt-4 mb-3">
-                                            <label>Número: </label>
-                                            <input type="number" class="form-control" aria-describedby="numero" name="numero[]" id="numero" placeholder="Número" />
-                                        </div>
-                                        <div class="col-md-6 mt-4 mb-3">
-                                            <label>Bairro: </label>
-                                            <input type="text" class="form-control" aria-describedby="bairro" name="bairro[]" id="bairro" placeholder="Bairro" />
-                                        </div>
-                                    </div>
+                                    <!--Loop para exibir os grupos dos campos para cada endereço-->
+                                    <?php for ($i = 0; $i < count($ceps); $i++) { ?>
 
-                                    <div class="row">
-                                        <div class="col-md-6 mt-4 mb-3">
-                                            <label>Estado: </label>
-                                            <input type="text" class="form-control" aria-describedby="estado" name="estado[]" id="estado" placeholder="Estado" />
+                                        <div class="row">
+                                            <div class="col-md-6 mt-4 mb-3">
+                                                <label class="form-label" for="cep">CEP: </label>
+                                                <input type="text" class="form-control" name="cep[]" id="cep" placeholder="CEP" aria-describedby="cep" value="<?php echo $ceps[$i]; ?>" required />
+                                            </div>
+                                            <div class="col-md-6 mt-4 mb-3">
+                                                <label>Rua: </label>
+                                                <input type="text" class="form-control" aria-describedby="rua" name="rua[]" id="rua" value="<?php echo $ruas[$i]; ?>" placeholder="Rua" />
+                                            </div>
                                         </div>
-                                        <div class="col-md-6 mt-4 mb-3">
-                                            <label>Cidade: </label>
-                                            <input type="text" class="form-control" aria-describedby="cidade" required name="cidade[]" id="cidade" placeholder="Cidade" />
+                                        <div class="row">
+                                            <div class="col-md-6 mt-4 mb-3">
+                                                <label>Número: </label>
+                                                <input type="number" class="form-control" aria-describedby="numero" name="numero[]" id="numero" value="<?php echo $numeros[$i]; ?>" placeholder="Número" />
+                                            </div>
+                                            <div class="col-md-6 mt-4 mb-3">
+                                                <label>Bairro: </label>
+                                                <input type="text" class="form-control" aria-describedby="bairro" name="bairro[]" id="bairro" value="<?php echo $bairros[$i]; ?>" placeholder="Bairro" />
+                                            </div>
                                         </div>
-                                    </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mt-4 mb-3">
+                                                <label>Estado: </label>
+                                                <input type="text" class="form-control" aria-describedby="estado" name="estado[]" id="estado" value="<?php echo $estados[$i]; ?>" placeholder="Estado" />
+                                            </div>
+                                            <div class="col-md-6 mt-4 mb-3">
+                                                <label>Cidade: </label>
+                                                <input type="text" class="form-control" aria-describedby="cidade" required name="cidade[]" id="cidade" value="<?php echo $cidades[$i]; ?>" placeholder="Cidade" />
+                                            </div>
+                                        </div>
+
+                                        <button type="button" data-id="<?php echo $id_address[$i]; ?>" onclick="removerCampo(this)" class="removerAddress btn btn-outline-danger">
+                                            Remover endereço
+                                        </button>
+
+                                    <?php } ?>
+
                                 </div>
 
                             </div>
-                            <input type="hidden" name="id_client" value="<?php echo $client_id; ?>">
                             <div class="form-group">
                                 <input type="submit" name="submitAddress" value="Salvar Alterações" />
                             </div>
@@ -128,6 +172,10 @@
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/inputmask@5/dist/jquery.inputmask.min.js"></script>
         <script src="js/address.js"></script>
+        <script>
+            // Armazenando o valor de id_client em uma variável JavaScript para possível uso em 'address.js'
+            var clientId = <?php echo json_encode($client_id); ?>;
+        </script>
 </body>
 
 </html>
