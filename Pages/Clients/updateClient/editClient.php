@@ -4,7 +4,7 @@ session_start();
 $msgError = '';
 
 if (isset($_SESSION['user_id']) && !empty($_GET['id_client'])) {
-    include_once '../../config.php';
+    include_once '../../../config.php';
 
     $clientId = $_GET['id_client'];
     $_SESSION['edit_user_id'] = $userId;
@@ -35,7 +35,7 @@ if (isset($_SESSION['user_id']) && !empty($_GET['id_client'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
-    <link rel="stylesheet" href="../Home/home.css">
+    <link rel="stylesheet" href="../../Home/home.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
         .icon-and-title {
@@ -65,7 +65,7 @@ if (isset($_SESSION['user_id']) && !empty($_GET['id_client'])) {
 <body>
     <header>
         <div class="header-container">
-            <form method="post" action="../Home/home.php">
+            <form method="post" action="../../Home/home.php">
                 <div class="logo">
                     <input type="submit" name="back" value="Voltar para home">
                 </div>

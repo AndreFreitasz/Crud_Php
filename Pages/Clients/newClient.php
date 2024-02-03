@@ -28,6 +28,8 @@ if (isset($_SESSION['user_id']) && isset($_POST['submitClient'])) {
     } else {
         $result = mysqli_query($conn, "INSERT INTO clients( id_user, name_client, cpf, rg, email_client, telephone1, telephone2, date_birth) 
         VALUES ( '$userId', '$nameClient', '$cpfClient', '$rgClient', '$emailClient', '$telephoneClient', '$optionalTelephone', '$dateOfBirth')");
+
+        header("Location: ../Home/home.php");
     }
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-include_once '../../config.php';
+include_once '../../../config.php';
 
 if (isset($_POST['updateClient'])) {
     $id = $_POST['id_client'];
@@ -27,6 +27,6 @@ if (isset($_POST['updateClient'])) {
             telephone1='$telephoneClient', telephone2='$optionalTelephone', date_birth='$dateOfBirth', rg='$rgClient' WHERE id_client=$id";
 
         $result = $conn->query($sqlUpdate);
-        header("Location: ../Home/home.php");
+        header("Location: ../../Home/home.php");
     }
 }
