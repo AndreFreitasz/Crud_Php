@@ -7,10 +7,19 @@ include_once '../../config.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idEndereco = filter_input(INPUT_POST, 'id_address', FILTER_SANITIZE_NUMBER_INT);
 
-    // Realizar a exclusão do endereço no banco de dados
-    $sqlDelete = "DELETE FROM address WHERE id_address = $idEndereco";
-    $conn->query($sqlDelete);
-
-    // Responder para indicar que a exclusão foi bem-sucedida (ou tratar erros, se necessário)
-    echo 'Endereço removido com sucesso';
+    // Verificar se o ID do endereço é um valor válido
+    if ($idEndereco !== null && is_numeric($idEndereco)) {
+        // Realizar a exclusão do endereço no banco de dados
+        $sqlDelete = "DELETE FROM address WHERE id_address = $idEndereco";
+        if ($conn->query($sqlDelete)) {
+            $enderecosRemovidos[] = $idEndereco;
+            var_dump('Endereço removido com sucesso');
+        } else {
+            var_dump('Erro ao remover o endereço no banco de dados.');
+        }
+    } else {
+        var_dump('ID do endereço inválido');
+    }
+} else {
+    echo 'Erro ao dar o post';
 }

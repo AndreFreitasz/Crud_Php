@@ -10,6 +10,8 @@ if (isset($_GET['id_client'])) {
     $client_id = $_GET['id_client'];
 }
 
+$enderecosRemovidos = array();
+
 $sqlCheckAddress = "SELECT * FROM address WHERE id_client = $client_id";
 $resultCheckAddress = $conn->query($sqlCheckAddress);
 
@@ -64,9 +66,9 @@ if ($resultCheckAddress->num_rows > 0) {
         }
 
         input[name="submitAddress"] {
-            background-color: #ff7b00;
+            background-color: #ff6500;
             display: flex;
-            margin-top: 16px;
+            margin: 32px 20px;
         }
     </style>
 </head>
@@ -101,6 +103,7 @@ if ($resultCheckAddress->num_rows > 0) {
                                 <button type="button" onclick="adicionarCampo()" class="addAddress btn btn-outline-warning"> Adicionar endereço</button>
                             </div>
                         </div>
+
                         <form method="POST" action="./loadingAddress.php">
                             <div id="enderecos">
                                 <input type="hidden" name="id_client[]" value="<?php echo $client_id; ?>">
@@ -112,10 +115,10 @@ if ($resultCheckAddress->num_rows > 0) {
                                     <?php } ?>
                                 <?php } ?>
 
-                                <div class="form-group">
+                                <!--Loop para exibir os grupos dos campos para cada endereço-->
+                                <?php for ($i = 0; $i < count($ceps); $i++) { ?>
 
-                                    <!--Loop para exibir os grupos dos campos para cada endereço-->
-                                    <?php for ($i = 0; $i < count($ceps); $i++) { ?>
+                                    <div class="form-group" style="<?php echo in_array($ids[$i], $enderecosRemovidos) ? 'display: none;' : ''; ?>">
 
                                         <div class="row">
                                             <div class="col-md-6 mt-4 mb-3">
@@ -149,14 +152,16 @@ if ($resultCheckAddress->num_rows > 0) {
                                             </div>
                                         </div>
 
-                                        <button type="button" data-id="<?php echo $id_address[$i]; ?>" onclick="removerCampo(this)" class="removerAddress btn btn-outline-danger">
+                                        <!-- Adicione esta linha para incluir o ID do endereço -->
+                                        <input type="hidden" name="id_address[]" value="<?php echo $ids[$i]; ?>" class="removido">
+                                        <button type="button" data-id="<?php echo $ids[$i]; ?>" onclick="removerCampo(this)" class="removerAddress btn btn-outline-danger">
                                             Remover endereço
                                         </button>
 
                                     <?php } ?>
 
-                                </div>
-
+                                    </div>
+                                    <div id="novosEnderecos"></div>
                             </div>
                             <div class="form-group">
                                 <input type="submit" name="submitAddress" value="Salvar Alterações" />

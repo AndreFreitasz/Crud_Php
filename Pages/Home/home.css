@@ -4,8 +4,7 @@ body {
 }
 
 header {
-    background: linear-gradient(to right, #ff8c00, #ff7b00);
-
+    background-color: #ff6500;
     color: white;
     padding: 40px;
 }
@@ -35,4 +34,5 @@ input[name="client"] {
 
 input[name="back"] {
     background-color: #ffe600;
+    color: #000;
 }
