@@ -29,8 +29,6 @@ if ($stmt = $conn->prepare($sql)) {
     }
 
     $stmt->close();
-} else {
-    // Tratar erro na preparação da consulta
 }
 
 ?>
@@ -74,8 +72,8 @@ if ($stmt = $conn->prepare($sql)) {
 
     <div class="m-5">
 
-        <div class="text-right mb-3">
-            <a class="btn btn-primary mb-4" href="../Home/ClientsDisables/clientsDisables.php" style="background-color: #ff8c00; border-color: #ff8c00; padding: 12px;">Clientes Desativados</a>
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-outline-danger mb-4" href="../Home/ClientsDisables/clientsDisables.php">Clientes Desativados</a>
         </div>
 
         <table class="table table-striped table-bg text-center">

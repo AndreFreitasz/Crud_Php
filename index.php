@@ -8,7 +8,7 @@
         $password = $_POST['password'];
     }
 
-    $sql = "SELECT id_user, password FROM users WHERE email = ?";
+    $sql = "SELECT id_user, password, userType FROM users WHERE email = ?";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
@@ -24,7 +24,11 @@
 
             $_SESSION["user_id"] = $row['id_user'];
 
-            header("Location: ./Pages/Home/home.php");
+            if ($row['userType']) {
+                header("Location: ./Pages/Admin/adminDashboard.php");
+            } else {
+                header("Location: ./Pages/Home/home.php");
+            }
             exit;
         }
     }
