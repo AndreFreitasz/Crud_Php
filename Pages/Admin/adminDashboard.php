@@ -24,34 +24,68 @@ $result = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Admin Dashboard</title>
     <style>
-    .custom-btn {
-        background-color: #ff6500;
-        border-color: #ff6500;
-    }
+        .custom-btn {
+            background-color: #ff6500;
+            border-color: #ff6500;
+        }
 
-    .custom-btn:hover {
-        background-color: #e65600;
-        border-color: #e65600;
-    }
-</style>
+        .custom-btn:hover {
+            background-color: #e65600;
+            border-color: #e65600;
+        }
+
+        .custom-btn-orange {
+            background-color: #fff;
+            color: #ff6500;
+            border-color: #ff6500;
+        }
+
+        .custom-btn-orange:hover {
+            background-color: #e65600;
+            border-color: #e65600;
+        }
+
+        .font-check-label {
+            font-size: 14px;
+        }
+
+        .color-check-input:checked {
+            background-color: #ff6500;
+            border-color: #ff6500;
+        }
+
+        /* Estilo para o input check quando estiver marcado e focado */
+        .color-check-input:checked:focus {
+            background-color: #ff6500;
+            border-color: #ff6500;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Modal -->
     <div class="modal fade" id="modalAdmin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Título do Modal</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <!-- Conteúdo do modal -->
-                    <p>Aqui você pode adicionar o conteúdo do modal.</p>
+                <div class="modal-body d-grid gap-2">
+                    <button type="button" class="btn btn-outline-warning custom-btn-orange p-3 m-3" data-bs-dismiss="modal">Exibir Clientes/Endereços</button>
+                    <button type="button" class="btn btn-outline-primary p-3 m-3" data-bs-dismiss="modal">Alterar senha</button>
+                    <button type="button" class="btn btn-outline-warning p-3 m-3" data-bs-dismiss="modal">Desativar Usuário</button>
+                    <button type="button" class="btn btn-outline-danger p-3 m-3" data-bs-dismiss="modal">Excluir Usuário</button>
+                    <input type"hidden" id="id_user_hidden" name="id_user">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <!-- Adicione qualquer botão adicional conforme necessário -->
+                <div class="modal-footer d-flex justify-content-between align-items-center">
+                    <div class="form-check d-flex align-items-center">
+                        <input class="form-check-input color-check-input" type="checkbox" value="" id="checkExample">
+                        <label class="form-check-label font-check-label ms-2" for="checkExample">
+                            Tornar esse usuário administrador
+                        </label>
+                    </div>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>
@@ -96,8 +130,8 @@ $result = $conn->query($sql);
                     echo "<td class='p-3 fs-7'>" . $user_data['id_user'] . "</td>";
                     echo "<td class='p-3 fs-7'>" . $user_data['email'] . "</td>";
                     echo "<td class='p-3 fs-7'>";
-                    // Botão para abrir o modal
-                    echo "<button type='button' class='btn btn-primary custom-btn' data-bs-toggle='modal' data-bs-target='#modalAdmin'>Alterar Usuário</button>";
+                    // Botão para abrir o modal com id_user como atributo de dados
+                    echo "<button type='button' class='btn btn-primary custom-btn alterar-usuario-btn' data-bs-toggle='modal' data-bs-target='#modalAdmin' data-id-user='" . $user_data['id_user'] . "'>Alterar Usuário</button>";
                     echo "</td>";
                     echo "</tr>";
                 }
