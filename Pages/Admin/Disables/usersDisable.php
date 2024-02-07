@@ -1,9 +1,17 @@
 <?php
-
+session_start();
 require_once '../../../config.php';
 
-$sql = "SELECT * FROM clients WHERE status = 0";
-$result = mysqli_query($conn, $sql);
+$sql = "SELECT id_user, email FROM users WHERE userType = 0 AND status_user = 1 ORDER BY id_user ASC";
+$result = $conn->query($sql);
+
+function logout()
+{
+    session_unset();
+    session_destroy();
+    header("Location: ../../index.php");
+    exit;
+}
 
 if (!$result) {
     die("Erro na consulta SQL: " . mysqli_error($conn));
@@ -56,33 +64,21 @@ mysqli_close($conn);
             <thead class="table text-center">
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Nome</th>
-                    <th scope="col">CPF</th>
-                    <th scope="col">RG</th>
                     <th scope="col">E-mail</th>
-                    <th scope="col">Telefone 1</th>
-                    <th scope="col">Data de Nascimento</th>
                     <th scope="col">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
-                while ($user_data = mysqli_fetch_assoc($result)) {
+                while ($user_data = $result->fetch_assoc()) {
                     echo "<tr>";
-                    echo "<td>" . $user_data['id_client'] . "</td>";
-                    echo "<td>" . $user_data['name_client'] . "</td>";
-                    echo "<td>" . $user_data['cpf'] . "</td>";
-                    echo "<td>" . $user_data['rg'] . "</td>";
-                    echo "<td>" . $user_data['email_client'] . "</td>";
-                    echo "<td>" . $user_data['telephone1'] . "</td>";
-                    echo "<td>" . $user_data['date_birth'] . "</td>";
+                    echo "<td class='p-3 fs-7'>" . $user_data['id_user'] . "</td>";
+                    echo "<td class='p-3 fs-7'>" . $user_data['email'] . "</td>";
                     echo "<td>";
 
-                    echo "<a class='btn btn-sm btn-success' href='../../Clients/updateClient/enableClient.php?id_client=$user_data[id_client]'>
-                            Ativar
-                        </a>";
+                    echo "<a class='btn btn-sm btn-success' href='./enableUser.php?id_user=" . $user_data['id_user'] . "'> Ativar </a>";
 
-                    "</td>";
+                    echo "</td>";
                     echo "</tr>";
                 }
                 ?>
