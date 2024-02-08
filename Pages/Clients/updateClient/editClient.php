@@ -65,7 +65,7 @@ if (isset($_SESSION['user_id']) && !empty($_GET['id_client'])) {
 <body>
     <header>
         <div class="header-container">
-            <form method="post" action="../../Home/home.php">
+            <form method="post" action="../../Home/home.php?user_id=<?php echo $user_id; ?>">
                 <div class="logo">
                     <input type="submit" name="back" value="Voltar para home">
                 </div>
@@ -133,6 +133,7 @@ if (isset($_SESSION['user_id']) && !empty($_GET['id_client'])) {
                 ?>
 
                 <input type=" hidden" name="id_client" value="<?php echo $clientId; ?>">
+                <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
 
                 <input type="submit" name="updateClient" value="Salvar Alterações" />
 

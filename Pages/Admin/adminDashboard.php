@@ -14,6 +14,10 @@ function logout()
     exit;
 }
 
+if (isset($_GET["logout"]) && $_GET["logout"] === "true") {
+    logout();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST["id_user"]) && isset($_POST["action"]) && $_POST["action"] === "desativar") {
@@ -38,19 +42,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo "Erro ao atualizar o tipo de usuário: " . $conn->error;
         }
-    } elseif (isset($_POST["action"]) && $_POST["action"] === "excluir") {
-        // Excluir Usuário
-            $sqlAddress = "DELETE FROM address WHERE id_user = $idUser";
-            $sqlClients = "DELETE FROM clients WHERE id_user = $idUser";
-            $sqlUsers = "DELETE FROM users WHERE id_user = $idUser";
-            // Adicione mais consultas DELETE para cada tabela relacionada
+    } elseif (isset($_POST["id_user"]) && isset($_POST["action"]) && $_POST["action"] === "excluir") {
+        $idUser = $_POST["id_user"];
 
-            // Executa as consultas DELETE
-            if ($conn->query($sql1) === TRUE && $conn->query($sql2) === TRUE && $conn->query($sql3) === TRUE) {
-                echo "Todos os dados do usuário foram excluídos com sucesso.";
+        $sql = "DELETE FROM address WHERE id_client IN (SELECT id_client FROM clients WHERE id_user = $idUser)";
+        if ($conn->query($sql) === TRUE) {
+            $sql = "DELETE FROM clients WHERE id_user = $idUser";
+            if ($conn->query($sql) === TRUE) {
+                $sql = "DELETE FROM users WHERE id_user = $idUser";
+                if ($conn->query($sql) === TRUE) {
+                    // Sucesso ao desativar o usuário
+                } else {
+                    echo "Erro ao excluir o usuário da tabela users: " . $conn->error;
+                }
             } else {
-                echo "Erro ao excluir os dados do usuário: " . $conn->error;
+                echo "Erro ao excluir o usuário da tabela clients: " . $conn->error;
             }
+        } else {
+            echo "Erro ao excluir o usuário da tabela address: " . $conn->error;
+        }
+    } elseif (isset($_POST["novaSenha"]) && isset($_POST["action"]) && $_POST["action"] === "alterarSenha") {
+        $novaSenha = $_POST["novaSenha"];
+        $idUser = $_POST["id_user"];
+        $senhaHash = password_hash($novaSenha, PASSWORD_DEFAULT);
+
+        $sql = "UPDATE users SET password = '$senhaHash' WHERE id_user = $idUser";
+        if ($conn->query($sql) === TRUE) {
+            echo "Senha atualizada com sucesso";
+        } else {
+            echo "Erro ao atualizar a senha: " . $conn->error;
+        }
+        exit;
     }
 }
 ?>
@@ -95,30 +117,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-color: #ff6500;
         }
 
-        /* Estilo para o input check quando estiver marcado e focado */
         .color-check-input:checked:focus {
             background-color: #ff6500;
             border-color: #ff6500;
+        }
+
+        .logout-link {
+            background-color: #dc2626;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: inline-block;
+        }
+
+        .logout-link:hover {
+            background-color: #ef4444;
         }
     </style>
 </head>
 
 <body>
+
     <!-- Modal -->
     <div class="modal fade" id="modalAdmin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Desativar Usuário</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Alterar Usuário</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="form-action-users" action="adminDashboard.php" method="post">
                     <div class="modal-body d-grid gap-2">
-                        <button type="button" class="btn btn-outline-warning custom-btn-orange p-3 m-3" data-bs-dismiss="modal">Exibir Clientes/Endereços</button>
-                        <button type="button" class="btn btn-outline-primary p-3 m-3" data-bs-dismiss="modal">Alterar senha</button>
+                        <button type="button" class="btn btn-outline-warning custom-btn-orange p-3 m-3 exibirClientesEnderecosBtn" >Exibir Clientes/Endereços</button>
+                        <button type="button" class="btn btn-outline-primary p-3 m-3" data-bs-toggle="modal" data-bs-target="#modalAlterarSenha">Alterar Senha</button>
                         <button type="submit" class="btn btn-outline-warning p-3 m-3">Desativar Usuário</button>
                         <button type="button" class="btn btn-outline-danger p-3 m-3" id="confirmarExclusaoBtnModal" data-bs-toggle="modal" data-bs-target="#confirmarExclusaoModal">Excluir Usuário</button>
-                        <input type="hidden" i="id_user_hidden" name="id_user">
+                        <input type="hidden" id="id_user_hidden" name="id_user">
                         <input type="hidden" name="action" value="desativar">
                     </div>
                 </form>
@@ -135,6 +170,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
+
     <!-- Modal de Confirmação de Exclusão -->
     <div class="modal fade" id="confirmarExclusaoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -148,22 +184,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="confirmarExclusaoBtn" data-action="excluir">Excluir</button>
+                    <button type="button" class="btn btn-danger" id="confirmarExclusaoBtn" data-action="excluir" data-id-user="<?php echo $user_data['id_user']; ?>">Excluir</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Alteração de Senha -->
+    <div class="modal fade" id="modalAlterarSenha" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Alterar Senha</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="form-alterar-senha" action="adminDashboard.php" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="novaSenha" class="form-label">Nova Senha</label>
+                            <input type="password" class="form-control" id="novaSenha" name="novaSenha" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Senha</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <header>
         <div class="header-container">
-            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-                <input type="submit" name="logout" value="Sair">
-
-                <?php
-                if (isset($_POST["logout"])) {
-                    logout();
-                }
-                ?>
+            <a href="../../index.php?logout=true" class="logout-link">Sair</a>
         </div>
     </header>
 
@@ -188,7 +241,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "<td class='p-3 fs-7'>" . $user_data['id_user'] . "</td>";
                     echo "<td class='p-3 fs-7'>" . $user_data['email'] . "</td>";
                     echo "<td class='p-3 fs-7'>";
-                    echo "<button type='button' class='btn btn-primary custom-btn alterar-usuario-btn' data-bs-toggle='modal' data-bs-target='#modalAdmin' data-id-user='" . $user_data['id_user'] . "'>Alterar Usuário</button>";
+                    echo "<button type='button' class='btn btn-primary custom-btn alterar-usuario-btn' data-bs-toggle='modal' data-bs-target='#modalAdmin' data-id-user='" . $user_data['id_user'] . "' onclick='setUserId(" . $user_data['id_user'] . ")'>Alterar Usuário</button>";
                     echo "</td>";
                     echo "</tr>";
                 }
@@ -201,7 +254,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./jsAdmin/actionsUsers.js"></script>
-    
 </body>
 
 </html>
