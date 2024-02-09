@@ -10,6 +10,20 @@ if (isset($_GET['id_client'])) {
     $client_id = $_GET['id_client'];
 }
 
+//resgatando o user_id da url e salvando em uma variável
+if (isset($_GET['user_id'])) {
+    $user_id = $_GET['user_id'];
+} else {
+    $user_id = $_SESSION['user_id'];
+}
+
+// Verificando se o parâmetro user_type foi fornecido na URL
+if (isset($_GET['user_type']) && $_GET['user_type'] == 1) {
+    $user_type = 1;
+} else {
+    $user_type = 0;
+}
+
 $enderecosRemovidos = array();
 
 $sqlCheckAddress = "SELECT * FROM address WHERE id_client = $client_id";
@@ -76,9 +90,12 @@ if ($resultCheckAddress->num_rows > 0) {
 <body>
     <header>
         <div class="header-container">
-            <form method="post" action="../Home/home.php">
+            <a class="logo-link">
+                <img src="../../Images/logo_kabum.svg" alt="Logo" width="140" height="auto">
+            </a>
+            <form method="post" action="../Home/home.php?user_id=<?php echo $user_id; ?>&user_type=<?php echo $user_type; ?>">
                 <div class="logo">
-                    <input type="submit" name="back" value="Voltar para home">
+                    <input type="submit" name="btn-back" value="Voltar para home">
                 </div>
             </form>
         </div>
@@ -104,7 +121,7 @@ if ($resultCheckAddress->num_rows > 0) {
                             </div>
                         </div>
 
-                        <form method="POST" action="./loadingAddress.php">
+                        <form method="POST" action="./loadingAddress.php?user_id=<?php echo $user_id; ?>&user_type=<?php echo $user_type; ?>">
                             <div id="enderecos">
                                 <input type="hidden" name="id_client[]" value="<?php echo $client_id; ?>">
 

@@ -15,13 +15,11 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-if(isset($_GET['user_id'])) {
+if (isset($_GET['user_id'])) {
     $user_id = $_GET['user_id'];
 } else {
     $user_id = $_SESSION['user_id'];
 }
-
-
 
 $sql = "SELECT id_client, name_client, cpf, rg, status, email_client, telephone1, date_birth FROM clients WHERE id_user =? AND status = 1 ORDER BY id_client ASC";
 
@@ -37,6 +35,13 @@ if ($stmt = $conn->prepare($sql)) {
     $stmt->close();
 }
 
+// Verificando se o parâmetro user_type foi fornecido na URL
+if (isset($_GET['user_type']) && $_GET['user_type'] == 1) {
+    $user_type = 1;
+} else {
+    $user_type = 0;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -50,8 +55,73 @@ if ($stmt = $conn->prepare($sql)) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <style>
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-link {
+            margin-right: auto;
+        }
+
+        .buttons-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logout-link {
+            background-color: #dc2626;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            padding: 10px 40px;
+            display: inline-block;
+        }
+
+        .logout-link:hover {
+            background-color: #dc2626;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            padding: 10px 40px;
+            display: inline-block;
+            background-color: #ef4444;
+        }
+
+        .btn {
+            margin-left: 10px;
+        }
+
         .table-bg {
             border-radius: 15px 15px 0 0;
+        }
+
+        .btn-home-adm {
+            background-color: #dc2626;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            padding: 10px 40px;
+            display: inline-block;
+        }
+
+        .btn-home-adm:hover {
+            background-color: #ef4444;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            padding: 10px 40px;
+            display: inline-block;
+        }
+
+        .btn-client {
+            background-color: #dc2626;
+            padding: 12px;
+        }
+
+        .btn-logout {
+            padding: 16px 8px;
         }
     </style>
 
@@ -60,26 +130,30 @@ if ($stmt = $conn->prepare($sql)) {
 <body>
     <header>
         <div class="header-container">
-            <form method="post" action="../Clients/newClient.php">
-                <div class="logo">
-                    <input type="submit" name="client" value="Cadastrar Cliente">
-                </div>
-            </form>
-            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-                <input type="submit" name="logout" value="Sair">
+            <a class="logo-link">
+                <img src="../../Images/logo_kabum.svg" alt="Logo" width="140" height="auto">
+            </a>
 
-                <?php
-                if (isset($_POST["logout"])) {
-                    logout();
-                }
-                ?>
+            <div class="buttons-container">
+
+                <?php if ($user_type == 1) : ?>
+                    <a class=' btn-home-adm ' href='../Admin/adminDashboard.php'>Voltar pro Adm</a>
+                <?php else : ?>
+                    <form method="post" action="../Clients/newClient.php?user_id=<?php echo $user_id; ?>&user_type=<?php echo $user_type; ?>">
+                        <input class="btn-client mr-4" type="submit" name="client" value="Cadastrar Cliente">
+                    </form>
+                    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                        <a href="../../index.php?" class="logout-link">Sair</a>
+                    </form>
+                <?php endif; ?>
+            </div>
         </div>
     </header>
 
     <div class="m-5">
 
         <div class="d-flex justify-content-end">
-            <a class="btn btn-outline-danger mb-4" href="../Home/ClientsDisables/clientsDisables.php">Clientes Desativados</a>
+            <a class="btn btn-outline-danger mb-4" href="../Home/ClientsDisables/clientsDisables.php?user_id=<?php echo $user_id; ?>&user_type=<?php echo $user_type; ?>">Clientes Desativados</a>
         </div>
 
         <table class="table table-striped table-bg text-center">
@@ -108,15 +182,15 @@ if ($stmt = $conn->prepare($sql)) {
                     echo "<td>" . $user_data['date_birth'] . "</td>";
                     echo "<td>";
 
-                    echo "<a class='btn btn-sm btn-warning' href='../Address/newAddress.php?id_client=$user_data[id_client]'>
+                    echo "<a class='btn btn-sm btn-warning' href='../Address/newAddress.php?id_client=$user_data[id_client]&user_id=$user_id&user_type=$user_type'>
                                     Endereços
                                 </a>
-                                <a class='btn btn-sm btn-primary' href='../Clients/updateClient/editClient.php?id_client=$user_data[id_client]&user_id=$user_id'>
+                                <a class='btn btn-sm btn-primary' href='../Clients/updateClient/editClient.php?id_client=$user_data[id_client]&user_id=$user_id&user_type=$user_type'>
                                     <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-pencil' viewBox='0 0 16 16'>
                                         <path d='M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325'/>
                                     </svg>
                                 </a>
-                                <a class='btn btn-sm btn-danger' href='../Clients/updateClient/disableClient.php?id_client=$user_data[id_client]'>
+                                <a class='btn btn-sm btn-danger' href='../Clients/updateClient/disableClient.php?id_client=$user_data[id_client]&user_id=$user_id&user_type=$user_type'>
                                     <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-ban' viewBox='0 0 16 16'>
                                         <path d='M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0'/>
                                     </svg>

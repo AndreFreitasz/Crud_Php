@@ -7,7 +7,21 @@ if (isset($_SESSION['user_id']) && !empty($_GET['id_client'])) {
     include_once '../../../config.php';
 
     $clientId = $_GET['id_client'];
-    $_SESSION['edit_user_id'] = $userId;
+
+    //resgatando o user_id da url e salvando em uma variável
+    if (isset($_GET['user_id'])) {
+        $user_id = $_GET['user_id'];
+    } else {
+        $user_id = $_SESSION['user_id'];
+    }
+
+    // Verificando se o parâmetro user_type foi fornecido na URL
+    if (isset($_GET['user_type']) && $_GET['user_type'] == 1) {
+        $user_type = 1;
+    } else {
+        $user_type = 0;
+    }
+
     $sqlSelect = "SELECT * FROM clients WHERE id_client=$clientId";
     $result = $conn->query($sqlSelect);
 
@@ -65,10 +79,11 @@ if (isset($_SESSION['user_id']) && !empty($_GET['id_client'])) {
 <body>
     <header>
         <div class="header-container">
-            <form method="post" action="../../Home/home.php?user_id=<?php echo $user_id; ?>">
-                <div class="logo">
-                    <input type="submit" name="back" value="Voltar para home">
-                </div>
+            <a class="logo-link">
+                <img src="../../../Images/logo_kabum.svg" alt="Logo" width="140" height="auto">
+            </a>
+            <form method="post" action="../../Home/home.php?user_id=<?php echo $user_id; ?>&user_type=<?php echo $user_type; ?>">
+                <input type="submit" name="btn-back" value="Voltar para home">
             </form>
         </div>
     </header>
@@ -83,7 +98,7 @@ if (isset($_SESSION['user_id']) && !empty($_GET['id_client'])) {
                         </svg>
                         <h2>Cliente</h2>
                     </div>
-                    <form action="./saveEditClient.php" method="POST"">
+                    <form action="./saveEditClient.php?user_id=<?php echo $user_id; ?>&user_type=<?php echo $user_type; ?>" method="POST"">
 
                         <div class=" row">
                         <div class="col-md-6 mt-4 mb-3">

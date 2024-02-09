@@ -40,6 +40,14 @@ mysqli_close($conn);
             text-align: center;
             margin-bottom: 64px;
         }
+
+        .btn-back {
+            background-color: #dc2626;
+        }
+
+        .btn-back:hover {
+            background-color: #ef4444;
+        }
     </style>
 
 </head>
@@ -48,9 +56,12 @@ mysqli_close($conn);
 
     <header>
         <div class="header-container">
+            <a href="../adminDashboard.php" class="logo-link">
+                <img src="../../../Images/logo_kabum.svg" alt="Logo" width="140" height="auto">
+            </a>
             <form method="post" action="../adminDashboard.php">
                 <div class="logo">
-                    <input type="submit" name="back" value="Voltar para home">
+                    <input type="submit" class="btn-back" value="Voltar para home">
                 </div>
             </form>
         </div>
@@ -59,7 +70,6 @@ mysqli_close($conn);
     <div class="m-5">
 
         <h1 class="TitleClientsDisabled">Usuários Desativados</h1>
-
         <table class="table table-striped table-bg text-center">
             <thead class="table text-center">
                 <tr>

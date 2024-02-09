@@ -9,7 +9,20 @@ if (!$result) {
     die("Erro na consulta SQL: " . mysqli_error($conn));
 }
 
-// Feche a conexão com o banco de dados
+//resgatando o user_id da url e salvando em uma variável
+if (isset($_GET['user_id'])) {
+    $user_id = $_GET['user_id'];
+} else {
+    $user_id = $_SESSION['user_id'];
+}
+
+// Verificando se o parâmetro user_type foi fornecido na URL
+if (isset($_GET['user_type']) && $_GET['user_type'] == 1) {
+    $user_type = 1;
+} else {
+    $user_type = 0;
+}
+
 mysqli_close($conn);
 ?>
 
@@ -32,6 +45,15 @@ mysqli_close($conn);
             text-align: center;
             margin-bottom: 64px;
         }
+
+        .btn-back {
+            background-color: #dc2626;
+            border-radius: 5px;
+        }
+
+        .btn-back:hover {
+            background-color: #ef4444;
+        }
     </style>
 
 </head>
@@ -40,10 +62,11 @@ mysqli_close($conn);
 
     <header>
         <div class="header-container">
-            <form method="post" action="../home.php">
-                <div class="logo">
-                    <input type="submit" name="back" value="Voltar para home">
-                </div>
+            <a class="logo-link">
+                <img src="../../../Images/logo_kabum.svg" alt="Logo" width="140" height="auto">
+            </a>
+            <form method="post" action="../home.php?user_id=<?php echo $user_id; ?>&user_type=<?php echo $user_type; ?>">
+                <input type="submit" class="btn-back" value="Voltar para home">
             </form>
         </div>
     </header>
@@ -78,7 +101,7 @@ mysqli_close($conn);
                     echo "<td>" . $user_data['date_birth'] . "</td>";
                     echo "<td>";
 
-                    echo "<a class='btn btn-sm btn-success' href='../../Clients/updateClient/enableClient.php?id_client=$user_data[id_client]'>
+                    echo "<a class='btn btn-sm btn-success' href='../../Clients/updateClient/enableClient.php?id_client=$user_data[id_client]&user_id=$user_id&user_type=$user_type'>
                             Ativar
                         </a>";
 

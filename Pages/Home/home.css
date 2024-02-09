@@ -25,14 +25,20 @@ input {
 }
 
 input[name="logout"] {
-    background-color: #ff0000;
+    background-color: #dc2626;
+    padding: 15px;
 }
 
 input[name="client"] {
     background-color: #0059ffd7;
 }
 
-input[name="back"] {
-    background-color: #ffe600;
-    color: #000;
+input[name="btn-back"] {
+    background-color: #dc2626;
+    color: white;
+    border-radius: 5px;
+}
+
+input[name="btn-back"]:hover {
+    background-color: #ef4444;
 }

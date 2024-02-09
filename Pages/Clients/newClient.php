@@ -3,6 +3,20 @@ session_start();
 
 $msgError = '';
 
+//resgatando o user_id da url e salvando em uma variável
+if (isset($_GET['user_id'])) {
+    $user_id = $_GET['user_id'];
+} else {
+    $user_id = $_SESSION['user_id'];
+}
+
+// Verificando se o parâmetro user_type foi fornecido na URL
+if (isset($_GET['user_type']) && $_GET['user_type'] == 1) {
+    $user_type = 1;
+} else {
+    $user_type = 0;
+}
+
 if (isset($_SESSION['user_id']) && isset($_POST['submitClient'])) {
     include_once '../../config.php';
 
@@ -29,7 +43,7 @@ if (isset($_SESSION['user_id']) && isset($_POST['submitClient'])) {
         $result = mysqli_query($conn, "INSERT INTO clients( id_user, name_client, cpf, rg, email_client, telephone1, telephone2, date_birth) 
         VALUES ( '$userId', '$nameClient', '$cpfClient', '$rgClient', '$emailClient', '$telephoneClient', '$optionalTelephone', '$dateOfBirth')");
 
-        header("Location: ../Home/home.php");
+        header("Location: ../Home/home.php?user_id=" . $user_id . "&user_type=" . $user_type);
     }
 }
 ?>
@@ -77,10 +91,11 @@ if (isset($_SESSION['user_id']) && isset($_POST['submitClient'])) {
 <body>
     <header>
         <div class="header-container">
-            <form method="post" action="../Home/home.php">
-                <div class="logo">
-                    <input type="submit" name="back" value="Voltar para home">
-                </div>
+            <a class="logo-link">
+                <img src="../../Images/logo_kabum.svg" alt="Logo" width="140" height="auto">
+            </a>
+            <form method="post" action="../Home/home.php?user_id=<?php echo $user_id; ?>&user_type=<?php echo $user_type; ?>">
+                <input type="submit" name="btn-back" value="Voltar para home">
             </form>
         </div>
     </header>
@@ -95,7 +110,7 @@ if (isset($_SESSION['user_id']) && isset($_POST['submitClient'])) {
                         </svg>
                         <h2>Cliente</h2>
                     </div>
-                    <form action="newClient.php" method="POST" onsubmit="return validateForm()">
+                    <form action="newClient.php?user_id=<?php echo $user_id; ?>&user_type=<?php echo $user_type; ?>" method="POST" onsubmit="return validateForm()">
                         <div class="row">
                             <div class="col-md-6 mt-4 mb-3">
                                 <label for="nameClient" class="form-label">Nome: *</label>

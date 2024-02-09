@@ -60,7 +60,7 @@ document.querySelector('#form-action-users button[type="submit"]').addEventListe
 
 //Excluindo o usuário ao clicar no botão 'Excluir' de acordo com o ID, e fazendo uma chamada AJAX para enviar o evento ao PHP
 document.getElementById('confirmarExclusaoBtn').addEventListener('click', function () {
-    var idUser = document.getElementById('id_user_hidden').value; // Obter o ID do usuário do campo oculto
+    var idUser = document.getElementById('id_user_hidden').value; 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'adminDashboard.php', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -119,10 +119,12 @@ function setUserId(userId) {
 }
 
 document.querySelector('.exibirClientesEnderecosBtn').addEventListener('click', function () {
-    // Recuperar o ID do usuário
+    // Recuperando o ID do usuário
     var userId = document.getElementById('id_user_hidden').value;
+    var userType = 1; // ou qualquer outro valor desejado
 
-    var url = "../Home/home.php?user_id=" + userId; 
+
+    var url = "../Home/home.php?user_id=" + userId + "&user_type=" + userType;; 
     window.location.href = url;
 });
 

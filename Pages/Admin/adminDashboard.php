@@ -87,6 +87,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Admin Dashboard</title>
     <style>
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+
         .custom-btn {
             background-color: #ff6500;
             border-color: #ff6500;
@@ -127,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: white;
             border-radius: 5px;
             text-decoration: none;
-            padding: 10px 20px;
+            padding: 10px 40px;
             display: inline-block;
         }
 
@@ -149,12 +156,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <form id="form-action-users" action="adminDashboard.php" method="post">
                     <div class="modal-body d-grid gap-2">
-                        <button type="button" class="btn btn-outline-warning custom-btn-orange p-3 m-3 exibirClientesEnderecosBtn" >Exibir Clientes/Endereços</button>
+                        <button type="button" class="btn btn-outline-warning custom-btn-orange p-3 m-3 exibirClientesEnderecosBtn">Exibir Clientes/Endereços</button>
                         <button type="button" class="btn btn-outline-primary p-3 m-3" data-bs-toggle="modal" data-bs-target="#modalAlterarSenha">Alterar Senha</button>
                         <button type="submit" class="btn btn-outline-warning p-3 m-3">Desativar Usuário</button>
                         <button type="button" class="btn btn-outline-danger p-3 m-3" id="confirmarExclusaoBtnModal" data-bs-toggle="modal" data-bs-target="#confirmarExclusaoModal">Excluir Usuário</button>
+                        <!-- Campos Ocultos, passando os devidos valores -->
                         <input type="hidden" id="id_user_hidden" name="id_user">
                         <input type="hidden" name="action" value="desativar">
+
                     </div>
                 </form>
                 <div class="modal-footer d-flex justify-content-between align-items-center">
@@ -216,14 +225,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <header>
         <div class="header-container">
-            <a href="../../index.php?logout=true" class="logout-link">Sair</a>
+            <a href="../Admin/adminDashboard.php" class="logo-link">
+                <img src="../../Images/logo_kabum.svg" alt="Logo" width="140" height="auto">
+            </a>
+            <a href="../../index.php?" class="logout-link">Sair</a>
         </div>
     </header>
 
 
     <div class="m-5">
-        <div class="d-flex justify-content-end">
-            <a class="btn btn-outline-danger mb-4" href="./Disables/usersDisable.php">Usuários Desativados</a>
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="fw-bold fs-5 text-decoration-underline">Usuário Administrador</p>
+            <div class="d-flex justify-content-end">
+                <a class="btn btn-outline-danger mb-4" href="./Disables/usersDisable.php">Usuários Desativados</a>
+            </div>
         </div>
 
         <table class="table table-striped table-bg text-center">
