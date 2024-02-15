@@ -43,8 +43,6 @@ if ($resultCheckAddress->num_rows > 0) {
         $ids[] = $row['id_address'];
     }
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -126,7 +124,12 @@ if ($resultCheckAddress->num_rows > 0) {
                                 <input type="hidden" name="id_client[]" value="<?php echo $client_id; ?>">
 
                                 <!-- Loop para exibir os grupos dos campos para cada endereço -->
-                                <?php for ($i = 0; $i < count($ceps); $i++) { ?>
+                                <?php
+                                $contadorEndereco = 0;
+                                for ($i = 0; $i < count($ceps); $i++) {
+                                    $contadorEndereco++;
+                                     $mainAddress = ($contadorEndereco == 1) ? 1 : 0;
+                                ?>
                                     <div class="form-group" style="<?php echo in_array($ids[$i], $enderecosRemovidos) ? 'display: none;' : ''; ?>">
 
                                         <div class="row">
@@ -136,33 +139,34 @@ if ($resultCheckAddress->num_rows > 0) {
                                             </div>
                                             <div class="col-md-6 mt-4 mb-3">
                                                 <label>Rua: </label>
-                                                <input type="text" class="form-control" aria-describedby="rua" name="rua[]" id="rua_<?php echo $ids[$i]; ?>" value="<?php echo $ruas[$i]; ?>" placeholder="Rua" />
+                                                <input type="text" class="form-control" aria-describedby="rua" name="rua[]" id="rua_<?php echo $ids[$i]; ?>" value="<?php echo $ruas[$i]; ?>" placeholder="Rua" required />
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 mt-4 mb-3">
                                                 <label>Número: </label>
-                                                <input type="number" class="form-control" aria-describedby="numero" name="numero[]" id="numero_<?php echo $ids[$i]; ?>" value="<?php echo $numeros[$i]; ?>" placeholder="Número" />
+                                                <input type="number" class="form-control" aria-describedby="numero" name="numero[]" id="numero_<?php echo $ids[$i]; ?>" value="<?php echo $numeros[$i]; ?>" placeholder="Número" required />
                                             </div>
                                             <div class="col-md-6 mt-4 mb-3">
                                                 <label>Bairro: </label>
-                                                <input type="text" class="form-control" aria-describedby="bairro" name="bairro[]" id="bairro_<?php echo $ids[$i]; ?>" value="<?php echo $bairros[$i]; ?>" placeholder="Bairro" />
+                                                <input type="text" class="form-control" aria-describedby="bairro" name="bairro[]" id="bairro_<?php echo $ids[$i]; ?>" value="<?php echo $bairros[$i]; ?>" placeholder="Bairro" required />
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-6 mt-4 mb-3">
                                                 <label>Estado: </label>
-                                                <input type="text" class="form-control" aria-describedby="estado" name="estado[]" id="estado_<?php echo $ids[$i]; ?>" value="<?php echo $estados[$i]; ?>" placeholder="Estado" />
+                                                <input type="text" class="form-control" aria-describedby="estado" name="estado[]" id="estado_<?php echo $ids[$i]; ?>" value="<?php echo $estados[$i]; ?>" placeholder="Estado" required />
                                             </div>
                                             <div class="col-md-6 mt-4 mb-3">
                                                 <label>Cidade: </label>
-                                                <input type="text" class="form-control" aria-describedby="cidade" name="cidade[]" id="cidade_<?php echo $ids[$i]; ?>" value="<?php echo $cidades[$i]; ?>" placeholder="Cidade" />
+                                                <input type="text" class="form-control" aria-describedby="cidade" name="cidade[]" id="cidade_<?php echo $ids[$i]; ?>" value="<?php echo $cidades[$i]; ?>" placeholder="Cidade" required />
                                             </div>
                                         </div>
 
                                         <!-- Adicione esta linha para incluir o ID do endereço -->
                                         <input type="hidden" name="id_address[]" value="<?php echo $ids[$i]; ?>" class="removido">
+                                        <input type="hidden" name="main_address[]" value="<?php echo ($contadorEndereco == 1) ? 1 : 0; ?>">
                                         <button type="button" data-id="<?php echo $ids[$i]; ?>" onclick="removerCampo(this)" class="removerAddress btn btn-outline-danger">
                                             Remover endereço
                                         </button>
@@ -187,8 +191,38 @@ if ($resultCheckAddress->num_rows > 0) {
     <script src="https://cdn.jsdelivr.net/npm/inputmask@5/dist/jquery.inputmask.min.js"></script>
     <script src="js/address.js"></script>
     <script>
-        // Armazenando o valor de id_client em uma variável JavaScript para possível uso em 'address.js'
-        var clientId = <?php echo json_encode($client_id); ?>;
+        $(document).ready(function() {
+            //Máscara do cep
+            $('input[name^="cep"]').on('keyup', function() {
+                $(this).inputmask('99999-999');
+            });
+        });
+
+        // Chamada para API ao preencher os outros campos de endereço
+        $('[id^="rua_"], [id^="bairro_"], [id^="cidade_"], [id^="estado_"]').on('blur', function() {
+            var id = this.id.split('_')[1]; // Obtendo o ID do campo
+            var cep = $('#cep_' + id).val().replace(/\D/g, '');
+
+            if (cep.length != 8) {
+                return;
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "https://viacep.com.br/ws/" + cep + "/json/", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    if (!data.erro) {
+
+                        $('#rua_' + id).val(data.logradouro);
+                        $('#bairro_' + id).val(data.bairro);
+                        $('#cidade_' + id).val(data.localidade);
+                        $('#estado_' + id).val(data.uf);
+                    }
+                }
+            };
+            xhr.send();
+        });
     </script>
 </body>
 
