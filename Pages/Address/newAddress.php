@@ -60,6 +60,20 @@ if ($resultCheckAddress->num_rows > 0) {
             align-items: center;
         }
 
+        .container-mainAddress {
+            margin-top: 22px;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        }
+
+        .text-mainAddress {
+            margin-top: 16px;
+            margin-bottom: 0px;
+            text-align: center;
+            font-size: 22px;
+        }
+
         h2 {
             margin-left: 8px;
             align-items: center;
@@ -101,7 +115,6 @@ if ($resultCheckAddress->num_rows > 0) {
 
     <div class="container mt-2">
         <div class="tab-content">
-
             <div class="tab-pane active" id="address">
                 <div class="row border g-0 rounded shadow-sm">
                     <div class="col p-4">
@@ -125,105 +138,112 @@ if ($resultCheckAddress->num_rows > 0) {
 
                                 <!-- Loop para exibir os grupos dos campos para cada endereço -->
                                 <?php
-                                $contadorEndereco = 0;
-                                for ($i = 0; $i < count($ceps); $i++) {
-                                    $contadorEndereco++;
-                                     $mainAddress = ($contadorEndereco == 1) ? 1 : 0;
+                                $primeiroEndereco = true;
+                                foreach ($ceps as $i => $cep) {
+                                    $mainAddress = ($primeiroEndereco) ? 1 : 0;
+                                    $primeiroEndereco = false;
                                 ?>
                                     <div class="form-group" style="<?php echo in_array($ids[$i], $enderecosRemovidos) ? 'display: none;' : ''; ?>">
+                                        <?php if ($mainAddress == 1) : ?>
+                                            <div class="container-mainAddress">
+                                                <h4 class="text-mainAddress">Endereço Principal</h4>
+                                            <?php endif; ?>
 
-                                        <div class="row">
-                                            <div class="col-md-6 mt-4 mb-3">
-                                                <label class="form-label" for="cep">CEP: </label>
-                                                <input type="text" class="form-control" name="cep[]" id="cep_<?php echo $ids[$i]; ?>" placeholder="CEP" aria-describedby="cep" value="<?php echo $ceps[$i]; ?>" />
+                                            <div class="row">
+                                                <div class="col-md-6 mt-4 mb-3">
+                                                    <label class="form-label" for="cep">CEP: </label>
+                                                    <input type="text" class="form-control" name="cep[]" id="cep_<?php echo $ids[$i]; ?>" placeholder="CEP" aria-describedby="cep" value="<?php echo $cep; ?>" />
+                                                </div>
+                                                <div class="col-md-6 mt-4 mb-3">
+                                                    <label>Rua: </label>
+                                                    <input type="text" class="form-control" aria-describedby="rua" name="rua[]" id="rua_<?php echo $ids[$i]; ?>" value="<?php echo $ruas[$i]; ?>" placeholder="Rua" required />
+                                                </div>
                                             </div>
-                                            <div class="col-md-6 mt-4 mb-3">
-                                                <label>Rua: </label>
-                                                <input type="text" class="form-control" aria-describedby="rua" name="rua[]" id="rua_<?php echo $ids[$i]; ?>" value="<?php echo $ruas[$i]; ?>" placeholder="Rua" required />
+                                            <div class="row">
+                                                <div class="col-md-6 mt-4 mb-3">
+                                                    <label>Número: </label>
+                                                    <input type="number" class="form-control" aria-describedby="numero" name="numero[]" id="numero_<?php echo $ids[$i]; ?>" value="<?php echo $numeros[$i]; ?>" placeholder="Número" required />
+                                                </div>
+                                                <div class="col-md-6 mt-4 mb-3">
+                                                    <label>Bairro: </label>
+                                                    <input type="text" class="form-control" aria-describedby="bairro" name="bairro[]" id="bairro_<?php echo $ids[$i]; ?>" value="<?php echo $bairros[$i]; ?>" placeholder="Bairro" required />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mt-4 mb-3">
-                                                <label>Número: </label>
-                                                <input type="number" class="form-control" aria-describedby="numero" name="numero[]" id="numero_<?php echo $ids[$i]; ?>" value="<?php echo $numeros[$i]; ?>" placeholder="Número" required />
-                                            </div>
-                                            <div class="col-md-6 mt-4 mb-3">
-                                                <label>Bairro: </label>
-                                                <input type="text" class="form-control" aria-describedby="bairro" name="bairro[]" id="bairro_<?php echo $ids[$i]; ?>" value="<?php echo $bairros[$i]; ?>" placeholder="Bairro" required />
-                                            </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-md-6 mt-4 mb-3">
-                                                <label>Estado: </label>
-                                                <input type="text" class="form-control" aria-describedby="estado" name="estado[]" id="estado_<?php echo $ids[$i]; ?>" value="<?php echo $estados[$i]; ?>" placeholder="Estado" required />
+                                            <div class="row">
+                                                <div class="col-md-6 mt-4 mb-3">
+                                                    <label>Estado: </label>
+                                                    <input type="text" class="form-control" aria-describedby="estado" name="estado[]" id="estado_<?php echo $ids[$i]; ?>" value="<?php echo $estados[$i]; ?>" placeholder="Estado" required />
+                                                </div>
+                                                <div class="col-md-6 mt-4 mb-3">
+                                                    <label>Cidade: </label>
+                                                    <input type="text" class="form-control" aria-describedby="cidade" name="cidade[]" id="cidade_<?php echo $ids[$i]; ?>" value="<?php echo $cidades[$i]; ?>" placeholder="Cidade" required />
+                                                </div>
                                             </div>
-                                            <div class="col-md-6 mt-4 mb-3">
-                                                <label>Cidade: </label>
-                                                <input type="text" class="form-control" aria-describedby="cidade" name="cidade[]" id="cidade_<?php echo $ids[$i]; ?>" value="<?php echo $cidades[$i]; ?>" placeholder="Cidade" required />
-                                            </div>
-                                        </div>
 
-                                        <!-- Adicione esta linha para incluir o ID do endereço -->
-                                        <input type="hidden" name="id_address[]" value="<?php echo $ids[$i]; ?>" class="removido">
-                                        <input type="hidden" name="main_address[]" value="<?php echo ($contadorEndereco == 1) ? 1 : 0; ?>">
-                                        <button type="button" data-id="<?php echo $ids[$i]; ?>" onclick="removerCampo(this)" class="removerAddress btn btn-outline-danger">
-                                            Remover endereço
-                                        </button>
+                                            <!-- Adicione esta linha para incluir o ID do endereço -->
+                                            <input type="hidden" name="id_address[]" value="<?php echo $ids[$i]; ?>" class="removido">
+                                            <input type="hidden" name="main_address[]" value="<?php echo $mainAddress; ?>">
+                                            <button type="button" data-id="<?php echo $ids[$i]; ?>" onclick="removerCampo(this)" class="removerAddress btn btn-outline-danger">
+                                                Remover endereço
+                                            </button>
+                                            </div>
+                                            <?php if ($mainAddress == 1) : ?>
                                     </div>
-                                <?php } ?>
+                                <?php endif; ?>
+                                <hr />
+                            <?php } ?>
 
                             </div>
                             <div id="novosEnderecos"></div>
+                            <div class="form-group">
+                                <input type="submit" name="submitAddress" value="Salvar Alterações" />
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <input type="submit" name="submitAddress" value="Salvar Alterações" />
-                    </div>
-                    </form>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- JAVASCRIPT FOR BOOTSTRAP AND MASK -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/inputmask@5/dist/jquery.inputmask.min.js"></script>
-    <script src="js/address.js"></script>
-    <script>
-        $(document).ready(function() {
-            //Máscara do cep
-            $('input[name^="cep"]').on('keyup', function() {
-                $(this).inputmask('99999-999');
+        <!-- JAVASCRIPT FOR BOOTSTRAP AND MASK -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/inputmask@5/dist/jquery.inputmask.min.js"></script>
+        <script src="js/address.js"></script>
+        <script>
+            $(document).ready(function() {
+                //Máscara do cep
+                $('input[name^="cep"]').on('keyup', function() {
+                    $(this).inputmask('99999-999');
+                });
             });
-        });
 
-        // Chamada para API ao preencher os outros campos de endereço
-        $('[id^="rua_"], [id^="bairro_"], [id^="cidade_"], [id^="estado_"]').on('blur', function() {
-            var id = this.id.split('_')[1]; // Obtendo o ID do campo
-            var cep = $('#cep_' + id).val().replace(/\D/g, '');
+            // Chamada para API ao preencher os outros campos de endereço
+            $('[id^="rua_"], [id^="bairro_"], [id^="cidade_"], [id^="estado_"]').on('blur', function() {
+                var id = this.id.split('_')[1]; // Obtendo o ID do campo
+                var cep = $('#cep_' + id).val().replace(/\D/g, '');
 
-            if (cep.length != 8) {
-                return;
-            }
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "https://viacep.com.br/ws/" + cep + "/json/", true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    var data = JSON.parse(xhr.responseText);
-                    if (!data.erro) {
-
-                        $('#rua_' + id).val(data.logradouro);
-                        $('#bairro_' + id).val(data.bairro);
-                        $('#cidade_' + id).val(data.localidade);
-                        $('#estado_' + id).val(data.uf);
-                    }
+                if (cep.length != 8) {
+                    return;
                 }
-            };
-            xhr.send();
-        });
-    </script>
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "https://viacep.com.br/ws/" + cep + "/json/", true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var data = JSON.parse(xhr.responseText);
+                        if (!data.erro) {
+
+                            $('#rua_' + id).val(data.logradouro);
+                            $('#bairro_' + id).val(data.bairro);
+                            $('#cidade_' + id).val(data.localidade);
+                            $('#estado_' + id).val(data.uf);
+                        }
+                    }
+                };
+                xhr.send();
+            });
+        </script>
 </body>
 
 </html>
