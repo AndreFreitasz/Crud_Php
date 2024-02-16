@@ -53,8 +53,8 @@ document.querySelector('#form-action-users button[type="submit"]').addEventListe
     var modalBackdrop = document.querySelector('.modal-backdrop');
 
     if (modal && modalBackdrop) {
-        modal.style.display = 'none'; // Oculta o modal
-        modalBackdrop.remove(); // Remove o backdrop do modal
+        modal.style.display = 'none'; 
+        modalBackdrop.remove(); 
     }
 });
 
@@ -121,7 +121,7 @@ function setUserId(userId) {
 document.querySelector('.exibirClientesEnderecosBtn').addEventListener('click', function () {
     // Recuperando o ID do usuário
     var userId = document.getElementById('id_user_hidden').value;
-    var userType = 1; // ou qualquer outro valor desejado
+    var userType = 1; 
 
 
     var url = "../Home/home.php?user_id=" + userId + "&user_type=" + userType;; 

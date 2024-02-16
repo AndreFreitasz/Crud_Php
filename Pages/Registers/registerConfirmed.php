@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Verificar se o email já existe
     $check_email_sql = "SELECT * FROM users WHERE email = ?";
     $check_email_stmt = $conn->prepare($check_email_sql);
-    $check_email_stmt->bind_param("s", $email);
+    $check_email_stmt->bind_param("s", $email);                         
     $check_email_stmt->execute();
     $check_email_result = $check_email_stmt->get_result();
 

@@ -18,7 +18,6 @@
         <input type="submit" />
 
         <?php
-        // Exibir mensagem de erro, se houver
         if (isset($_GET['error'])) {
             echo '<p class="error-message">' . htmlspecialchars($_GET['error']) . '</p>';
         }

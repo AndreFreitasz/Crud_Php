@@ -50,17 +50,16 @@ function adicionarCampo() {
     }(controleCampoAtual));
 }
 
-var enderecosRemovidos = []; // Declare e inicialize a variável globalmente
-
-
+var enderecosRemovidos = []; 
 function removerCampo(botao) {
     var grupoCampos = botao.closest(".form-group");
 
     if (grupoCampos) {
         grupoCampos.style.display = "none";
 
-        // Encontra o input hidden com o ID do endereço dentro do grupo de campos
         var idInput = grupoCampos.querySelector('[name="id_address[]"]');
+
+        //Desabilitando os campos após a remoção
         grupoCampos.querySelectorAll('input[type="text"], input[type="number"]').forEach(function (field) {
             field.disabled = true;
         });
@@ -68,7 +67,7 @@ function removerCampo(botao) {
         if (idInput) {
             var id = idInput.value;
 
-            // Remove o ID do endereço do array enderecosRemovidos
+            // Removendo o ID endereço do array enderecosRemovidos
             var index = enderecosRemovidos.indexOf(id);
             if (index !== -1) {
                 enderecosRemovidos.splice(index, 1);
@@ -77,23 +76,6 @@ function removerCampo(botao) {
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "deleteAddress.php", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    console.log(xhr.responseText);
-
-                    if (xhr.status == 200) {
-                        // Verificando se há um registro no banco de dados para o ID do endereço
-                        var response = JSON.parse(xhr.responseText);
-                        if (response.hasRecord) {
-                            console.log("Registro encontrado. Endereço excluído.");
-                        }
-                        // Recarregar a página após a exclusão
-                        location.reload();
-                    } else {
-                        console.error("Erro na requisição ao servidor.");
-                    }
-                }
-            };
 
             var data = "id_address=" + encodeURIComponent(id);
             xhr.send(data);
