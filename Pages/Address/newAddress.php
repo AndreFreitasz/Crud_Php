@@ -184,7 +184,7 @@ if ($resultCheckAddress->num_rows > 0) {
                                             <!-- Adicione esta linha para incluir o ID do endereço -->
                                             <input type="hidden" name="id_address[]" value="<?php echo $ids[$i]; ?>" class="removido">
                                             <input type="hidden" name="main_address[]" value="<?php echo $mainAddress; ?>">
-                                            <button type="button" data-id="<?php echo $ids[$i]; ?>" onclick="removerCampo(this)" class="removerAddress btn btn-outline-danger">
+                                            <button type="button" onclick="removerCampo(this.parentNode.parentNode)" class="removerAddress btn btn-outline-danger">
                                                 Remover endereço
                                             </button>
                                             </div>

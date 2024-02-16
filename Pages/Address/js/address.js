@@ -1,7 +1,7 @@
 var controleCampo = 1;
 
 function adicionarCampo() {
-    var controleCampoAtual = controleCampo; 
+    var controleCampoAtual = controleCampo;
     controleCampo++;
 
     var novoCampo = document.createElement("div");
@@ -49,42 +49,58 @@ function adicionarCampo() {
         };
     }(controleCampoAtual));
 }
+
+var enderecosRemovidos = []; // Declare e inicialize a variável globalmente
+
+
 function removerCampo(botao) {
-    var id = botao.getAttribute("data-id");
-    var campoEndereco = document.querySelector('[data-id="' + id + '"]');
+    var grupoCampos = botao.closest(".form-group");
 
-    if (campoEndereco) {
-        campoEndereco = campoEndereco.closest(".form-group");
-        campoEndereco.style.display = "none";
-    }
+    if (grupoCampos) {
+        grupoCampos.style.display = "none";
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "deleteAddress.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            console.log(xhr.responseText);
-            console.log("ID do Endereço: ", id);
+        // Encontra o input hidden com o ID do endereço dentro do grupo de campos
+        var idInput = grupoCampos.querySelector('[name="id_address[]"]');
+        grupoCampos.querySelectorAll('input[type="text"], input[type="number"]').forEach(function (field) {
+            field.disabled = true;
+        });
 
-            if (xhr.status == 200) {
-                // Adicionando a classe 'removido' ao campo a ser removido
-                if (campoEndereco) {
-                    campoEndereco.classList.add("removido");
-                }
+        if (idInput) {
+            var id = idInput.value;
 
-                // Ocultando o grupo de formulário
-                if (campoEndereco) {
-                    campoEndereco.style.display = "none";
-                }
-
-                // Recarregando a página após a remoção
-                location.reload();
-            } else {
-                console.error("Erro na requisição ao servidor.");
+            // Remove o ID do endereço do array enderecosRemovidos
+            var index = enderecosRemovidos.indexOf(id);
+            if (index !== -1) {
+                enderecosRemovidos.splice(index, 1);
             }
-        }
-    };
 
-    var data = "id_address=" + encodeURIComponent(id);
-    xhr.send(data);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "deleteAddress.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    console.log(xhr.responseText);
+
+                    if (xhr.status == 200) {
+                        // Verificando se há um registro no banco de dados para o ID do endereço
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.hasRecord) {
+                            console.log("Registro encontrado. Endereço excluído.");
+                        }
+                        // Recarregar a página após a exclusão
+                        location.reload();
+                    } else {
+                        console.error("Erro na requisição ao servidor.");
+                    }
+                }
+            };
+
+            var data = "id_address=" + encodeURIComponent(id);
+            xhr.send(data);
+        } else {
+            console.error("ID do endereço não encontrado.");
+        }
+    } else {
+        console.error("Grupo de campos não encontrado.");
+    }
 }
