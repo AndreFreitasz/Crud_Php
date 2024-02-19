@@ -69,31 +69,35 @@ mysqli_close($conn);
 
     <div class="m-5">
 
-        <h1 class="TitleClientsDisabled">Usuários Desativados</h1>
-        <table class="table table-striped table-bg text-center">
-            <thead class="table text-center">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">E-mail</th>
-                    <th scope="col">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                while ($user_data = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td class='p-3 fs-7'>" . $user_data['id_user'] . "</td>";
-                    echo "<td class='p-3 fs-7'>" . $user_data['email'] . "</td>";
-                    echo "<td>";
-
-                    echo "<a class='btn btn-sm btn-success' href='./enableUser.php?id_user=" . $user_data['id_user'] . "'> Ativar </a>";
-
-                    echo "</td>";
-                    echo "</tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+        <?php if (mysqli_num_rows($result) > 0) { ?>
+            <h1 class="TitleClientsDisabled">Usuários Desativados</h1>
+            <table class="table table-striped table-bg text-center">
+                <thead class="table text-center">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">E-mail</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    while ($user_data = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td class='p-3 fs-7'>" . $user_data['id_user'] . "</td>";
+                        echo "<td class='p-3 fs-7'>" . $user_data['email'] . "</td>";
+                        echo "<td>";
+                        echo "<a class='btn btn-sm btn-success' href='./enableUser.php?id_user=" . $user_data['id_user'] . "'> Ativar </a>";
+                        echo "</td>";
+                        echo "</tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        <?php } else { ?>
+            <div class="container-client-empty">
+                <p class="client-empty">Nenhum Usuário Desativado</p>
+            </div>
+        <?php } ?>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

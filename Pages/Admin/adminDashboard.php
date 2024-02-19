@@ -241,28 +241,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
 
-        <table class="table table-striped table-bg text-center">
-            <thead class="table text-center">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">E-mail</th>
-                    <th scope="col">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                while ($user_data = $result->fetch_assoc()) {
-                    echo "<tr data-id='" . $user_data['id_user'] . "'>";
-                    echo "<td class='p-3 fs-7'>" . $user_data['id_user'] . "</td>";
-                    echo "<td class='p-3 fs-7'>" . $user_data['email'] . "</td>";
-                    echo "<td class='p-3 fs-7'>";
-                    echo "<button type='button' class='btn btn-primary custom-btn alterar-usuario-btn' data-bs-toggle='modal' data-bs-target='#modalAdmin' data-id-user='" . $user_data['id_user'] . "' onclick='setUserId(" . $user_data['id_user'] . ")'>Alterar Usuário</button>";
-                    echo "</td>";
-                    echo "</tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+        <?php if (mysqli_num_rows($result) > 0) { ?>
+            <table class="table table-striped table-bg text-center">
+                <thead class="table text-center">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">E-mail</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    while ($user_data = $result->fetch_assoc()) {
+                        echo "<tr data-id='" . $user_data['id_user'] . "'>";
+                        echo "<td class='p-3 fs-7'>" . $user_data['id_user'] . "</td>";
+                        echo "<td class='p-3 fs-7'>" . $user_data['email'] . "</td>";
+                        echo "<td class='p-3 fs-7'>";
+                        echo "<button type='button' class='btn btn-primary custom-btn alterar-usuario-btn' data-bs-toggle='modal' data-bs-target='#modalAdmin' data-id-user='" . $user_data['id_user'] . "' onclick='setUserId(" . $user_data['id_user'] . ")'>Alterar Usuário</button>";
+                        echo "</td>";
+                        echo "</tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        <?php } else { ?>
+            <div class="container-client-empty">
+                <p class="client-empty">Nenhum Usuário Habilitado</p>
+            </div>
+        <?php } ?>
     </div>
 
     <!-- Scripts -->

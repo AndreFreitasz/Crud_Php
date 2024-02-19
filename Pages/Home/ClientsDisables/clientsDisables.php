@@ -54,6 +54,7 @@ mysqli_close($conn);
         .btn-back:hover {
             background-color: #ef4444;
         }
+        
     </style>
 
 </head>
@@ -73,44 +74,49 @@ mysqli_close($conn);
 
     <div class="m-5">
 
-        <h1 class="TitleClientsDisabled">Clientes Desativados</h1>
+        <?php if (mysqli_num_rows($result) > 0) { ?>
+            <h1 class="TitleClientsDisabled">Clientes Desativados</h1>
+            <table class="table table-striped table-bg text-center">
+                <thead class="table text-center">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">CPF</th>
+                        <th scope="col">RG</th>
+                        <th scope="col">E-mail</th>
+                        <th scope="col">Telefone 1</th>
+                        <th scope="col">Data de Nascimento</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    while ($user_data = mysqli_fetch_assoc($result)) {
+                        echo "<tr>";
+                        echo "<td>" . $user_data['id_client'] . "</td>";
+                        echo "<td>" . $user_data['name_client'] . "</td>";
+                        echo "<td>" . $user_data['cpf'] . "</td>";
+                        echo "<td>" . $user_data['rg'] . "</td>";
+                        echo "<td>" . $user_data['email_client'] . "</td>";
+                        echo "<td>" . $user_data['telephone1'] . "</td>";
+                        echo "<td>" . $user_data['date_birth'] . "</td>";
+                        echo "<td>";
 
-        <table class="table table-striped table-bg text-center">
-            <thead class="table text-center">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nome</th>
-                    <th scope="col">CPF</th>
-                    <th scope="col">RG</th>
-                    <th scope="col">E-mail</th>
-                    <th scope="col">Telefone 1</th>
-                    <th scope="col">Data de Nascimento</th>
-                    <th scope="col">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                while ($user_data = mysqli_fetch_assoc($result)) {
-                    echo "<tr>";
-                    echo "<td>" . $user_data['id_client'] . "</td>";
-                    echo "<td>" . $user_data['name_client'] . "</td>";
-                    echo "<td>" . $user_data['cpf'] . "</td>";
-                    echo "<td>" . $user_data['rg'] . "</td>";
-                    echo "<td>" . $user_data['email_client'] . "</td>";
-                    echo "<td>" . $user_data['telephone1'] . "</td>";
-                    echo "<td>" . $user_data['date_birth'] . "</td>";
-                    echo "<td>";
-
-                    echo "<a class='btn btn-sm btn-success' href='../../Clients/updateClient/enableClient.php?id_client=$user_data[id_client]&user_id=$user_id&user_type=$user_type'>
+                        echo "<a class='btn btn-sm btn-success' href='../../Clients/updateClient/enableClient.php?id_client=$user_data[id_client]&user_id=$user_id&user_type=$user_type'>
                             Ativar
                         </a>";
 
-                    "</td>";
-                    echo "</tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+                        "</td>";
+                        echo "</tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        <?php } else { ?>
+            <div class="container-client-empty">
+                <p class="client-empty">Nenhum Cliente Desativado</p>
+            </div>
+        <?php } ?>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
